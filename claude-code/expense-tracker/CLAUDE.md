@@ -14,15 +14,16 @@ npm run preview   # preview production build locally
 
 ## Architecture
 
-This is a single-file React app (`src/App.jsx`) with no routing, no external state library, and no backend — all state lives in `useState` hooks and resets on page refresh.
+React app with no routing, no external state library, and no backend — all state lives in `useState` hooks and resets on page refresh.
 
-**Data model:** each transaction has `{ id, description, amount, type, category, date }`. `type` is either `"income"` or `"expense"`. `amount` is stored as a string (not a number), which causes arithmetic bugs in the summary totals.
+**Component tree:**
+- `App` — holds `transactions` state and passes it down; renders the three child components.
+  - `Summary` — receives `transactions`, computes `totalIncome`, `totalExpenses`, and `balance` internally.
+  - `TransactionForm` — owns its own form state; calls `onAdd(transaction)` prop on submit.
+  - `TransactionList` — receives `transactions`, owns filter state (`filterType`, `filterCategory`) internally.
 
-**Key behaviors:**
-- Summary cards (Income / Expenses / Balance) are derived by filtering and reducing `transactions` state.
-- The transaction list supports client-side filtering by `type` and `category`.
-- New transactions are appended via form submit in `handleSubmit`.
+**Data model:** each transaction has `{ id, description, amount, type, category, date }`. `type` is either `"income"` or `"expense"`. `amount` is a number.
 
-**Categories** are a hardcoded array: `["food", "housing", "utilities", "transport", "entertainment", "salary", "other"]`.
+**Categories** are a hardcoded array defined in both `TransactionForm` and `TransactionList`: `["food", "housing", "utilities", "transport", "entertainment", "salary", "other"]`.
 
 Styles are in `src/App.css`. CSS class names `income-amount`, `expense-amount`, and `balance-amount` control the color of monetary values throughout the UI.

@@ -1,8 +1,35 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const COLORS = ['#e05c5c', '#e08c3a', '#d4b84a', '#5c9e6e', '#4a7bbf', '#7b5cbf', '#888'];
-
 const CATEGORIES = ['food', 'housing', 'utilities', 'transport', 'entertainment', 'salary', 'other'];
+
+const COLORS = {
+  food:          '#e8956d',
+  housing:       '#7eb8e0',
+  utilities:     '#f0c44a',
+  transport:     '#85d4b0',
+  entertainment: '#c992e0',
+  salary:        '#5fb87a',
+  other:         '#7a7870',
+};
+
+const CustomTooltip = ({ active, payload }) => {
+  if (!active || !payload?.length) return null;
+  const { name, value } = payload[0].payload;
+  return (
+    <div style={{
+      background: '#242220',
+      border: '1px solid #2a2824',
+      borderRadius: 3,
+      padding: '8px 14px',
+      fontFamily: "'DM Sans', sans-serif",
+    }}>
+      <p style={{ fontSize: 12, color: '#8a8478', textTransform: 'capitalize', marginBottom: 2 }}>{name}</p>
+      <p style={{ fontSize: 14, color: '#f0ebe0', fontFamily: "'DM Mono', monospace" }}>
+        ${value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+      </p>
+    </div>
+  );
+};
 
 function SpendingChart({ transactions }) {
   const data = CATEGORIES
@@ -14,9 +41,7 @@ function SpendingChart({ transactions }) {
     }))
     .filter(entry => entry.value > 0);
 
-  if (data.length === 0) {
-    return null;
-  }
+  if (data.length === 0) return null;
 
   return (
     <div className="spending-chart">
@@ -30,13 +55,21 @@ function SpendingChart({ transactions }) {
             cx="50%"
             cy="50%"
             outerRadius={100}
+            strokeWidth={0}
           >
-            {data.map((entry, index) => (
-              <Cell key={entry.name} fill={COLORS[CATEGORIES.indexOf(entry.name) % COLORS.length]} />
+            {data.map((entry) => (
+              <Cell key={entry.name} fill={COLORS[entry.name] ?? COLORS.other} />
             ))}
           </Pie>
-          <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, 'Amount']} />
-          <Legend />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            wrapperStyle={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 12,
+              color: '#8a8478',
+              textTransform: 'capitalize',
+            }}
+          />
         </PieChart>
       </ResponsiveContainer>
     </div>

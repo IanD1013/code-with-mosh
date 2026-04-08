@@ -10,13 +10,15 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "tsx": "^4.21.0"
+    "prisma": "^7.3.0"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
+    "@prisma/client": "^7.3.0",
     "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
     "express": "^5.2.1"
   }
 }

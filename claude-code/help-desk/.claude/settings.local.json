@@ -9,7 +9,18 @@
       "Bash(bun src/index.ts)",
       "Bash(npx tsx:*)",
       "Bash(netstat -ano)",
-      "Bash(xargs -I{} taskkill //PID {} //F)"
+      "Bash(xargs -I{} taskkill //PID {} //F)",
+      "Bash(openssl rand:*)",
+      "Bash(npx:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(pg_isready:*)",
+      "Bash(curl -s http://localhost:3000/api/auth/ok)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('version:', d.get\\('version'\\)\\); print\\('main:', d.get\\('main'\\)\\); print\\('exports keys:', list\\(d.get\\('exports', {}\\).keys\\(\\)\\)[:5]\\)\")",
+      "Bash(node:*)",
+      "Bash(curl -s -X POST http://localhost:3000/api/auth/sign-up/email -H 'Content-Type: application/json' -d '{\"email\":\"test@example.com\",\"password\":\"password123\",\"name\":\"Test User\"}')",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl:*)"
     ]
   }
 }

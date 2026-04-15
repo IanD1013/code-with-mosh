@@ -10,7 +10,8 @@ A ticket management system that uses AI to classify, respond to, and route suppo
 - **Backend**: Express + TypeScript + Bun (port 3000)
 - **Database**: PostgreSQL with Prisma ORM
 - **AI**: Claude API (Anthropic)
-- **Auth**: Database sessions
+- **Auth**: Better Auth (email/password, database sessions)
+- **UI**: shadcn/ui (Radix) + Tailwind CSS v4
 
 ## Project Structure
 
@@ -26,13 +27,44 @@ A ticket management system that uses AI to classify, respond to, and route suppo
 cd server && bun run dev
 
 # Start client
-cd client && bun run dev
+cd client && npm run dev
 ```
 
 The client proxies `/api/*` requests to the server via Vite config.
 
 ## Key Conventions
 
-- Use Bun as the runtime and package manager (not npm/yarn)
+- Server uses Bun as the runtime; client uses npm (bun segfaults on this machine)
 - Use TypeScript throughout
 - Use context7 MCP server to fetch up-to-date documentation for libraries
+
+## Frontend: UI
+
+- **shadcn/ui** components live in `client/src/components/ui/`
+- Add new components manually (shadcn CLI tries to use bun which segfaults):
+  1. Install any Radix peer deps with `npm install` in `/client`
+  2. Copy the component source into `client/src/components/ui/`
+- **Tailwind CSS v4** via `@tailwindcss/vite` plugin (no `tailwind.config.js`)
+- Theme CSS variables are defined in `client/src/index.css` using OKLCH color space
+- The `cn()` utility is at `client/src/lib/utils.ts`
+- Path alias `@/` resolves to `client/src/`
+
+## Authentication
+
+Auth is handled by **Better Auth** with email/password only. Sign-up is disabled — users are created via the seed script.
+
+### Server (`server/src/auth.ts`)
+- Prisma adapter connected to PostgreSQL
+- `emailAndPassword` enabled, `disableSignUp: true`
+- Trusted origin: `http://localhost:5173` (or `CLIENT_URL` env var)
+- Users have an additional `role` field (default: `"agent"`)
+- Auth routes mounted at `/api/auth/*` via `toNodeHandler(auth)`
+
+### Client (`client/src/lib/auth-client.ts`)
+- `createAuthClient()` from `better-auth/react`
+- Exports: `signIn`, `signOut`, `useSession`
+- `signIn.email({ email, password })` returns `{ error }` on failure
+- Session accessed via `useSession()` hook — `data.user` contains user info including `role`
+
+### Seeding
+Run `cd server && bun run seed` to create the initial admin user.

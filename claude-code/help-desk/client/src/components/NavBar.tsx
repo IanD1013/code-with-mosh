@@ -11,7 +11,7 @@ export default function NavBar() {
   }
 
   return (
-    <nav className="flex items-center justify-between px-6 h-14 bg-blue-900 text-white">
+    <nav className="flex items-center justify-between px-6 h-14 bg-white border-b text-foreground">
       <span className="font-bold text-lg tracking-wide">Helpdesk</span>
       <div className="flex items-center gap-4">
         {session?.user && (
@@ -19,7 +19,7 @@ export default function NavBar() {
             <span className="text-sm">{session.user.name}</span>
             <button
               onClick={handleSignOut}
-              className="px-3.5 py-1.5 text-sm border border-white/50 rounded cursor-pointer hover:bg-white/10"
+              className="px-3.5 py-1.5 text-sm border border-border rounded cursor-pointer hover:bg-muted"
             >
               Sign out
             </button>

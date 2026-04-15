@@ -1,24 +1,32 @@
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { signIn } from "../lib/auth-client";
+
+const schema = z.object({
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(1, "Password is required"),
+});
+
+type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-    const { error } = await signIn.email({ email, password });
-
+  async function onSubmit(data: FormData) {
+    setServerError("");
+    const { error } = await signIn.email(data);
     if (error) {
-      setError(error.message ?? "Invalid email or password");
-      setLoading(false);
+      setServerError(error.message ?? "Invalid email or password");
     } else {
       navigate("/");
     }
@@ -30,36 +38,36 @@ export default function LoginPage() {
         <h1 style={styles.title}>Helpdesk</h1>
         <p style={styles.subtitle}>Sign in to your account</p>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
+        <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
           <div style={styles.field}>
             <label style={styles.label}>Email</label>
             <input
+              {...register("email")}
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
               autoFocus
-              style={styles.input}
+              style={{ ...styles.input, ...(errors.email && styles.inputError) }}
               placeholder="you@example.com"
             />
+            {errors.email && <p style={styles.error}>{errors.email.message}</p>}
           </div>
 
           <div style={styles.field}>
             <label style={styles.label}>Password</label>
             <input
+              {...register("password")}
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={styles.input}
+              style={{ ...styles.input, ...(errors.password && styles.inputError) }}
               placeholder="••••••••"
             />
+            {errors.password && (
+              <p style={styles.error}>{errors.password.message}</p>
+            )}
           </div>
 
-          {error && <p style={styles.error}>{error}</p>}
+          {serverError && <p style={styles.error}>{serverError}</p>}
 
-          <button type="submit" disabled={loading} style={styles.button}>
-            {loading ? "Signing in..." : "Sign in"}
+          <button type="submit" disabled={isSubmitting} style={styles.button}>
+            {isSubmitting ? "Signing in..." : "Sign in"}
           </button>
         </form>
       </div>
@@ -115,6 +123,9 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: "0.5rem",
     fontSize: "0.95rem",
     outline: "none",
+  },
+  inputError: {
+    border: "1px solid #dc2626",
   },
   error: {
     margin: 0,

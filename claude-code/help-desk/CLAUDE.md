@@ -61,10 +61,17 @@ Auth is handled by **Better Auth** with email/password only. Sign-up is disabled
 - Auth routes mounted at `/api/auth/*` via `toNodeHandler(auth)`
 
 ### Client (`client/src/lib/auth-client.ts`)
-- `createAuthClient()` from `better-auth/react`
+- `createAuthClient()` from `better-auth/react` with `inferAdditionalFields` plugin
+- `inferAdditionalFields({ user: { role: { type: "string" } } })` from `better-auth/client/plugins` is required to expose `role` on the session user type
 - Exports: `signIn`, `signOut`, `useSession`
 - `signIn.email({ email, password })` returns `{ error }` on failure
 - Session accessed via `useSession()` hook — `data.user` contains user info including `role`
 
+### Route Guards (`client/src/App.tsx`)
+- `ProtectedRoute` — redirects to `/login` if not authenticated
+- `AdminRoute` — redirects to `/login` if not authenticated, to `/` if role is not `"admin"`
+- `GuestRoute` — redirects to `/` if already authenticated
+
 ### Seeding
 Run `cd server && bun run seed` to create the initial admin user.
+To create additional users, write a one-off script in `server/src/` and run with `npx tsx` (bun segfaults on inline scripts).

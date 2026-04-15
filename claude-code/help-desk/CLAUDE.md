@@ -67,6 +67,15 @@ Auth is handled by **Better Auth** with email/password only. Sign-up is disabled
 - `signIn.email({ email, password })` returns `{ error }` on failure
 - Session accessed via `useSession()` hook — `data.user` contains user info including `role`
 
+### Server Middleware (`server/src/middleware/auth.ts`)
+- `requireAuth` — reads the Better Auth session from request headers; responds 401 if missing; attaches session to `res.locals.session`
+- `requireAdmin` — must follow `requireAuth` or be used standalone; responds 403 if role is not `"admin"`
+- **Every new API route must use one of these.** Pattern:
+  ```ts
+  app.get("/api/users", requireAuth, requireAdmin, handler);
+  app.get("/api/tickets", requireAuth, handler);
+  ```
+
 ### Route Guards (`client/src/App.tsx`)
 - `ProtectedRoute` — redirects to `/login` if not authenticated
 - `AdminRoute` — redirects to `/login` if not authenticated, to `/` if role is not `"admin"`

@@ -4,9 +4,9 @@ export default function HomePage() {
   return (
     <div>
       <NavBar />
-      <main style={{ padding: "2rem" }}>
-        <h2>Welcome to Helpdesk</h2>
-        <p>Your tickets will appear here.</p>
+      <main className="p-8">
+        <h2 className="text-2xl font-semibold text-gray-900">Welcome to Helpdesk</h2>
+        <p className="text-gray-500 mt-1">Your tickets will appear here.</p>
       </main>
     </div>
   );

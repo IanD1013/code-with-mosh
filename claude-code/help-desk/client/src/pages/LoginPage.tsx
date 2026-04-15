@@ -33,40 +33,50 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Helpdesk</h1>
-        <p style={styles.subtitle}>Sign in to your account</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-10 rounded-xl shadow w-full max-w-md">
+        <h1 className="text-3xl font-bold text-gray-900 mb-1">Helpdesk</h1>
+        <p className="text-gray-500 text-sm mb-6">Sign in to your account</p>
 
-        <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
-          <div style={styles.field}>
-            <label style={styles.label}>Email</label>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-gray-700">Email</label>
             <input
               {...register("email")}
               type="email"
               autoFocus
-              style={{ ...styles.input, ...(errors.email && styles.inputError) }}
+              className={`px-3 py-2.5 border rounded-lg text-sm outline-none ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="you@example.com"
             />
-            {errors.email && <p style={styles.error}>{errors.email.message}</p>}
-          </div>
-
-          <div style={styles.field}>
-            <label style={styles.label}>Password</label>
-            <input
-              {...register("password")}
-              type="password"
-              style={{ ...styles.input, ...(errors.password && styles.inputError) }}
-              placeholder="••••••••"
-            />
-            {errors.password && (
-              <p style={styles.error}>{errors.password.message}</p>
+            {errors.email && (
+              <p className="text-red-600 text-sm">{errors.email.message}</p>
             )}
           </div>
 
-          {serverError && <p style={styles.error}>{serverError}</p>}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-gray-700">Password</label>
+            <input
+              {...register("password")}
+              type="password"
+              className={`px-3 py-2.5 border rounded-lg text-sm outline-none ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="••••••••"
+            />
+            {errors.password && (
+              <p className="text-red-600 text-sm">{errors.password.message}</p>
+            )}
+          </div>
 
-          <button type="submit" disabled={isSubmitting} style={styles.button}>
+          {serverError && <p className="text-red-600 text-sm">{serverError}</p>}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-2 py-2.5 bg-blue-600 text-white rounded-lg text-base font-semibold cursor-pointer hover:bg-blue-700 disabled:opacity-60"
+          >
             {isSubmitting ? "Signing in..." : "Sign in"}
           </button>
         </form>
@@ -74,73 +84,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f3f4f6",
-  },
-  card: {
-    backgroundColor: "#fff",
-    padding: "2.5rem",
-    borderRadius: "0.75rem",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)",
-    width: "100%",
-    maxWidth: "400px",
-  },
-  title: {
-    margin: "0 0 0.25rem",
-    fontSize: "1.75rem",
-    fontWeight: 700,
-    color: "#111827",
-  },
-  subtitle: {
-    margin: "0 0 1.5rem",
-    color: "#6b7280",
-    fontSize: "0.95rem",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "1rem",
-  },
-  field: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.375rem",
-  },
-  label: {
-    fontSize: "0.875rem",
-    fontWeight: 500,
-    color: "#374151",
-  },
-  input: {
-    padding: "0.625rem 0.75rem",
-    border: "1px solid #d1d5db",
-    borderRadius: "0.5rem",
-    fontSize: "0.95rem",
-    outline: "none",
-  },
-  inputError: {
-    border: "1px solid #dc2626",
-  },
-  error: {
-    margin: 0,
-    color: "#dc2626",
-    fontSize: "0.875rem",
-  },
-  button: {
-    marginTop: "0.5rem",
-    padding: "0.7rem",
-    backgroundColor: "#2563eb",
-    color: "#fff",
-    border: "none",
-    borderRadius: "0.5rem",
-    fontSize: "1rem",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-};

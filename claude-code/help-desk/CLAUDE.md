@@ -18,6 +18,7 @@ A ticket management system that uses AI to classify, respond to, and route suppo
 ```
 /client   - React frontend (Vite)
 /server   - Express backend
+/e2e      - Playwright end-to-end tests
 ```
 
 ## Development
@@ -31,6 +32,22 @@ cd client && npm run dev
 ```
 
 The client proxies `/api/*` requests to the server via Vite config.
+
+## Testing
+
+Playwright is installed at the repo root. Tests run against a separate `helpdesk_test` database.
+
+```bash
+npm run test:e2e       # headless
+npm run test:e2e:ui    # interactive UI mode
+```
+
+- Config: `playwright.config.ts` (root)
+- Tests: `e2e/` directory
+- `e2e/global-setup.ts` runs `prisma migrate deploy` then seeds the test DB before each run
+- Test DB credentials: `server/.env.test` (gitignored) — same as `.env` but with `helpdesk_test` database
+- Test seed script: `server/src/seed-test.ts` — wipes and recreates admin + agent users
+- Rate limiting is disabled outside `NODE_ENV=production` — no need to work around it in tests
 
 ## Key Conventions
 

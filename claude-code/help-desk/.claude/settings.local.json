@@ -22,7 +22,9 @@
       "Bash(python3 -m json.tool)",
       "Bash(curl:*)",
       "Bash(bun -e ':*)",
-      "Bash(bun add:*)"
+      "Bash(bun add:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(node_modules/@playwright/test/node_modules/.bin/tsc --noEmit)"
     ]
   }
 }

@@ -15,15 +15,16 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many login attempts. Try again in 15 minutes." },
-});
-
-app.use("/api/auth/sign-in", authLimiter);
+if (process.env.NODE_ENV === "production") {
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many login attempts. Try again in 15 minutes." },
+  });
+  app.use("/api/auth/sign-in", authLimiter);
+}
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());

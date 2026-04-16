@@ -33,27 +33,13 @@ cd client && npm run dev
 
 The client proxies `/api/*` requests to the server via Vite config.
 
-## Testing
-
-Playwright is installed at the repo root. Tests run against a separate `helpdesk_test` database.
-
-```bash
-npm run test:e2e       # headless
-npm run test:e2e:ui    # interactive UI mode
-```
-
-- Config: `playwright.config.ts` (root)
-- Tests: `e2e/` directory
-- `e2e/global-setup.ts` runs `prisma migrate deploy` then seeds the test DB before each run
-- Test DB credentials: `server/.env.test` (gitignored) — same as `.env` but with `helpdesk_test` database
-- Test seed script: `server/src/seed-test.ts` — wipes and recreates admin + agent users
-- Rate limiting is disabled outside `NODE_ENV=production` — no need to work around it in tests
 
 ## Key Conventions
 
 - Server uses Bun as the runtime; client uses npm (bun segfaults on this machine)
 - Use TypeScript throughout
 - Use context7 MCP server to fetch up-to-date documentation for libraries
+- **Always use the `playwright-e2e-writer` agent to write E2E tests** — never write tests inline. Invoke it after completing any user-facing feature. It has full knowledge of the test setup, seed data, and testing conventions for this project.
 
 ## Frontend: UI
 

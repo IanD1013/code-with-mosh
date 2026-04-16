@@ -24,7 +24,9 @@
       "Bash(bun -e ':*)",
       "Bash(bun add:*)",
       "Bash(./node_modules/.bin/tsc --noEmit)",
-      "Bash(node_modules/@playwright/test/node_modules/.bin/tsc --noEmit)"
+      "Bash(node_modules/@playwright/test/node_modules/.bin/tsc --noEmit)",
+      "Read(//c/Users/iantu/.claude/**)",
+      "Bash(xargs grep *)"
     ]
   }
 }

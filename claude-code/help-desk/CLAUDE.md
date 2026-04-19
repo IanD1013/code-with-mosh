@@ -41,6 +41,17 @@ The client proxies `/api/*` requests to the server via Vite config.
 - Use context7 MCP server to fetch up-to-date documentation for libraries
 - **Always use the `playwright-e2e-writer` agent to write E2E tests** — never write tests inline. Invoke it after completing any user-facing feature. It has full knowledge of the test setup, seed data, and testing conventions for this project.
 
+## Frontend: Component Tests
+
+- **Vitest** + **React Testing Library** + **MSW** for component tests in `client/`
+- Test files live next to the component: `src/pages/Foo.tsx` → `src/pages/Foo.test.tsx`
+- Shared test utilities:
+  - `src/test/setup.ts` — loads `@testing-library/jest-dom` matchers (runs before every test)
+  - `src/test/render.tsx` — `renderWithProviders()` wraps the component in `QueryClientProvider` + `MemoryRouter`
+- Mock `../lib/auth-client` with `vi.mock` to control session state
+- Mock API calls with MSW (`setupServer` / `http.get` / `HttpResponse`) — never mock axios directly
+- Run tests: `npm test` (single run) or `npm run test:watch` (watch mode) from `client/`
+
 ## Frontend: Data Fetching
 
 - Use **axios** for all HTTP requests (`withCredentials: true` for cookie-based auth)

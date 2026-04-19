@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import NavBar from "../components/NavBar";
 
 interface User {
@@ -9,21 +10,13 @@ interface User {
   createdAt: string;
 }
 
-export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+async function fetchUsers(): Promise<User[]> {
+  const res = await axios.get<User[]>("/api/users", { withCredentials: true });
+  return res.data;
+}
 
-  useEffect(() => {
-    fetch("/api/users", { credentials: "include" })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load users");
-        return res.json();
-      })
-      .then(setUsers)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
+export default function UsersPage() {
+  const { data: users = [], isLoading, error } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
 
   return (
     <div>
@@ -32,10 +25,10 @@ export default function UsersPage() {
         <h2 className="text-2xl font-semibold text-gray-900">Users</h2>
         <p className="text-gray-500 mt-1">Manage all helpdesk users.</p>
 
-        {loading && <p className="mt-6 text-gray-500">Loading...</p>}
-        {error && <p className="mt-6 text-red-500">{error}</p>}
+        {isLoading && <p className="mt-6 text-gray-500">Loading...</p>}
+        {error && <p className="mt-6 text-red-500">{(error as Error).message}</p>}
 
-        {!loading && !error && (
+        {!isLoading && !error && (
           <div className="mt-6 rounded-lg border border-gray-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-600 uppercase text-xs">

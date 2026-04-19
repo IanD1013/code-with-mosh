@@ -41,6 +41,12 @@ The client proxies `/api/*` requests to the server via Vite config.
 - Use context7 MCP server to fetch up-to-date documentation for libraries
 - **Always use the `playwright-e2e-writer` agent to write E2E tests** — never write tests inline. Invoke it after completing any user-facing feature. It has full knowledge of the test setup, seed data, and testing conventions for this project.
 
+## Frontend: Data Fetching
+
+- Use **axios** for all HTTP requests (`withCredentials: true` for cookie-based auth)
+- Use **TanStack Query** (`@tanstack/react-query`) for all server state — no raw `useEffect`/`useState` for fetching
+- `QueryClientProvider` is set up in `client/src/main.tsx`
+
 ## Frontend: UI
 
 - **shadcn/ui** components live in `client/src/components/ui/`

@@ -12,7 +12,7 @@ export default function NavBar() {
 
   return (
     <nav className="flex items-center justify-between px-6 h-14 bg-white border-b text-foreground">
-      <span className="font-bold text-lg tracking-wide">Helpdesk</span>
+      <Link to="/" className="font-bold text-lg tracking-wide">Helpdesk</Link>
       <div className="flex items-center gap-4">
         {session?.user?.role === "admin" && (
           <Link to="/users" className="text-sm hover:underline">

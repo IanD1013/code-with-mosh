@@ -26,7 +26,11 @@
       "Bash(./node_modules/.bin/tsc --noEmit)",
       "Bash(node_modules/@playwright/test/node_modules/.bin/tsc --noEmit)",
       "Read(//c/Users/iantu/.claude/**)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(tasklist *)",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -ano ^| findstr \\\\\":3000 \\\\\"'\\) do taskkill /F /PID %a\")",
+      "Bash(echo \"Server PID: $!\")",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -ano ^| findstr \\\\\":5173 \\\\\"'\\) do taskkill /F /PID %a\")"
     ]
   }
 }

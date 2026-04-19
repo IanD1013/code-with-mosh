@@ -17,14 +17,20 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
+    // Run the auth setup before any tests that need saved sessions
+    {
+      name: "auth setup",
+      testMatch: /auth\.setup\.ts/,
+    },
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      dependencies: ["auth setup"],
     },
   ],
   webServer: [
     {
-      command: "bun run dev",
+      command: "npx tsx --watch src/index.ts",
       cwd: path.resolve(__dirname, "server"),
       port: 3000,
       reuseExistingServer: !process.env.CI,

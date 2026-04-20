@@ -7,7 +7,7 @@ A ticket management system that uses AI to classify, respond to, and route suppo
 ## Tech Stack
 
 - **Frontend**: React + TypeScript + Vite (port 5173)
-- **Backend**: Express + TypeScript + Bun (port 3000)
+- **Backend**: Express + TypeScript + Node.js/tsx (port 3000)
 - **Database**: PostgreSQL with Prisma ORM
 - **AI**: Claude API (Anthropic)
 - **Auth**: Better Auth (email/password, database sessions)
@@ -25,7 +25,7 @@ A ticket management system that uses AI to classify, respond to, and route suppo
 
 ```bash
 # Start server
-cd server && bun run dev
+cd server && npm run dev
 
 # Start client
 cd client && npm run dev
@@ -36,7 +36,7 @@ The client proxies `/api/*` requests to the server via Vite config.
 
 ## Key Conventions
 
-- Server uses Bun as the runtime; client uses npm (bun segfaults on this machine)
+- Server uses Node.js + tsx; client uses npm
 - Use TypeScript throughout
 - Use context7 MCP server to fetch up-to-date documentation for libraries
 - **Always use the `playwright-e2e-writer` agent to write E2E tests** — never write tests inline. Invoke it after completing any user-facing feature. It has full knowledge of the test setup, seed data, and testing conventions for this project.
@@ -102,5 +102,5 @@ Auth is handled by **Better Auth** with email/password only. Sign-up is disabled
 - `GuestRoute` — redirects to `/` if already authenticated
 
 ### Seeding
-Run `cd server && bun run seed` to create the initial admin user.
-To create additional users, write a one-off script in `server/src/` and run with `npx tsx` (bun segfaults on inline scripts).
+Run `cd server && npm run seed` to create the initial admin user.
+To create additional users, write a one-off script in `server/src/` and run with `npx tsx`.

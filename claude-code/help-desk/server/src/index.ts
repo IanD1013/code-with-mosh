@@ -1,11 +1,10 @@
 import "dotenv/config";
-import express from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth.js";
-import { requireAuth, requireAdmin } from "./middleware/auth.js";
-import prisma from "./db.js";
+import usersRouter from "./routes/users.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -35,12 +34,15 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
-app.get("/api/users", requireAuth, requireAdmin, async (_req, res) => {
-  const users = await prisma.user.findMany({
-    select: { id: true, name: true, email: true, role: true, createdAt: true },
-    orderBy: { createdAt: "desc" },
-  });
-  res.json(users);
+app.use("/api/users", usersRouter);
+
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  if (typeof err === "object" && err !== null && "code" in err && (err as { code: string }).code === "P2002") {
+    res.status(409).json({ error: "A user with this email already exists." });
+    return;
+  }
+  console.error(err);
+  res.status(500).json({ error: "Internal server error" });
 });
 
 app.listen(port, () => {

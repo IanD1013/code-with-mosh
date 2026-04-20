@@ -1,6 +1,7 @@
 {
   "name": "helpdesk",
   "private": true,
+  "workspaces": ["core", "client", "server"],
   "scripts": {
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"

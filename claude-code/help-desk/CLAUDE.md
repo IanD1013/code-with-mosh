@@ -18,6 +18,7 @@ A ticket management system that uses AI to classify, respond to, and route suppo
 ```
 /client   - React frontend (Vite)
 /server   - Express backend
+/core     - Shared code (Zod schemas, types) — imported as @helpdesk/core
 /e2e      - Playwright end-to-end tests
 ```
 
@@ -38,6 +39,10 @@ The client proxies `/api/*` requests to the server via Vite config.
 
 - Server uses Node.js + tsx; client uses npm
 - Use TypeScript throughout
+- Use **Zod** for all request body validation in server routes (`safeParse` → 400 on failure)
+- Use the `Role` enum from `@prisma/client` for role values — never hardcode role strings
+- Server runs **Express 5**, which automatically forwards rejected async handler promises to error middleware — no try/catch needed in route handlers. Add a global error handler at the bottom of `index.ts` for cases that need custom status codes (e.g. Prisma P2002 → 409)
+- **Shared Zod schemas** live in `core/src/schemas/` and are exported from `@helpdesk/core`. Define schemas there and import them in both client and server — never duplicate a schema across packages
 - Use context7 MCP server to fetch up-to-date documentation for libraries
 - **Always use the `playwright-e2e-writer` agent to write E2E tests** — never write tests inline. Invoke it after completing any user-facing feature. It has full knowledge of the test setup, seed data, and testing conventions for this project.
 

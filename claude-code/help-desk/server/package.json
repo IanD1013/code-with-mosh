@@ -14,10 +14,8 @@
     "prisma": "^7.3.0",
     "tsx": "^4.19.4"
   },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
   "dependencies": {
+    "@helpdesk/core": "*",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.3.0",
     "better-auth": "^1.6.0",
@@ -25,6 +23,7 @@
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
     "express-rate-limit": "^8.3.2",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "zod": "^4.3.6"
   }
 }

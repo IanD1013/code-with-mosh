@@ -4,15 +4,8 @@ import axios from "axios";
 import NavBar from "../components/NavBar";
 import { Button } from "../components/ui/button";
 import CreateUserModal from "../components/CreateUserModal";
-import UsersTable from "../components/UsersTable";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  createdAt: string;
-}
+import EditUserModal from "../components/EditUserModal";
+import UsersTable, { type User } from "../components/UsersTable";
 
 async function fetchUsers(): Promise<User[]> {
   const res = await axios.get<User[]>("/api/users", { withCredentials: true });
@@ -21,7 +14,8 @@ async function fetchUsers(): Promise<User[]> {
 
 export default function UsersPage() {
   const { data: users = [], isLoading, error } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
-  const [modalOpen, setModalOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   return (
     <div>
@@ -32,10 +26,20 @@ export default function UsersPage() {
             <h2 className="text-2xl font-semibold text-gray-900">Users</h2>
             <p className="text-gray-500 mt-1">Manage all helpdesk users.</p>
           </div>
-          <Button onClick={() => setModalOpen(true)}>New User</Button>
+          <Button onClick={() => setCreateOpen(true)}>New User</Button>
         </div>
-        <CreateUserModal open={modalOpen} onOpenChange={setModalOpen} />
-        <UsersTable users={users} isLoading={isLoading} error={error as Error | null} />
+        <CreateUserModal open={createOpen} onOpenChange={setCreateOpen} />
+        <EditUserModal
+          user={editingUser}
+          open={editingUser !== null}
+          onOpenChange={(open) => { if (!open) setEditingUser(null); }}
+        />
+        <UsersTable
+          users={users}
+          isLoading={isLoading}
+          error={error as Error | null}
+          onEdit={setEditingUser}
+        />
       </main>
     </div>
   );

@@ -1,6 +1,8 @@
+import { Pencil } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;
@@ -12,9 +14,10 @@ interface Props {
   users: User[];
   isLoading: boolean;
   error: Error | null;
+  onEdit: (user: User) => void;
 }
 
-export default function UsersTable({ users, isLoading, error }: Props) {
+export default function UsersTable({ users, isLoading, error, onEdit }: Props) {
   if (error) return <p className="mt-6 text-red-500">{error.message}</p>;
 
   return (
@@ -26,6 +29,7 @@ export default function UsersTable({ users, isLoading, error }: Props) {
             <th className="px-4 py-3 text-left">Email</th>
             <th className="px-4 py-3 text-left">Role</th>
             <th className="px-4 py-3 text-left">Created</th>
+            <th className="px-4 py-3" />
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
@@ -36,6 +40,7 @@ export default function UsersTable({ users, isLoading, error }: Props) {
                   <td className="px-4 py-3"><Skeleton className="h-4 w-48" /></td>
                   <td className="px-4 py-3"><Skeleton className="h-5 w-14 rounded" /></td>
                   <td className="px-4 py-3"><Skeleton className="h-4 w-24" /></td>
+                  <td className="px-4 py-3" />
                 </tr>
               ))
             : users.map((user) => (
@@ -55,6 +60,16 @@ export default function UsersTable({ users, isLoading, error }: Props) {
                   </td>
                   <td className="px-4 py-3 text-gray-500">
                     {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Edit ${user.name}`}
+                      onClick={() => onEdit(user)}
+                    >
+                      <Pencil className="size-4" />
+                    </Button>
                   </td>
                 </tr>
               ))}

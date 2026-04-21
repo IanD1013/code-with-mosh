@@ -19,6 +19,7 @@ function validate<T>(schema: ZodSchema<T>, body: unknown, res: Response): T | nu
 
 router.get("/", requireAuth, requireAdmin, async (_req, res) => {
   const users = await prisma.user.findMany({
+    where: { deletedAt: null },
     select: { id: true, name: true, email: true, role: true, createdAt: true },
     orderBy: { createdAt: "desc" },
   });
@@ -75,6 +76,26 @@ router.patch("/:id", requireAuth, requireAdmin, async (req, res) => {
   }
 
   res.json(user);
+});
+
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const user = await prisma.user.findUnique({ where: { id: req.params["id"] } });
+
+  if (!user) {
+    res.status(404).json({ error: "User not found." });
+    return;
+  }
+  if (user.role === Role.admin) {
+    res.status(403).json({ error: "Admin users cannot be deleted." });
+    return;
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { deletedAt: new Date() },
+  });
+
+  res.status(204).end();
 });
 
 export default router;

@@ -5,6 +5,7 @@ import NavBar from "../components/NavBar";
 import { Button } from "../components/ui/button";
 import CreateUserModal from "../components/CreateUserModal";
 import EditUserModal from "../components/EditUserModal";
+import DeleteUserModal from "../components/DeleteUserModal";
 import UsersTable, { type User } from "../components/UsersTable";
 
 async function fetchUsers(): Promise<User[]> {
@@ -16,6 +17,7 @@ export default function UsersPage() {
   const { data: users = [], isLoading, error } = useQuery({ queryKey: ["users"], queryFn: fetchUsers });
   const [createOpen, setCreateOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [deletingUser, setDeletingUser] = useState<User | null>(null);
 
   return (
     <div>
@@ -34,11 +36,17 @@ export default function UsersPage() {
           open={editingUser !== null}
           onOpenChange={(open) => { if (!open) setEditingUser(null); }}
         />
+        <DeleteUserModal
+          user={deletingUser}
+          open={deletingUser !== null}
+          onOpenChange={(open) => { if (!open) setDeletingUser(null); }}
+        />
         <UsersTable
           users={users}
           isLoading={isLoading}
           error={error as Error | null}
           onEdit={setEditingUser}
+          onDelete={setDeletingUser}
         />
       </main>
     </div>

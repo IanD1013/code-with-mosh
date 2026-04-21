@@ -1,4 +1,4 @@
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
@@ -15,9 +15,10 @@ interface Props {
   isLoading: boolean;
   error: Error | null;
   onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
 }
 
-export default function UsersTable({ users, isLoading, error, onEdit }: Props) {
+export default function UsersTable({ users, isLoading, error, onEdit, onDelete }: Props) {
   if (error) return <p className="mt-6 text-red-500">{error.message}</p>;
 
   return (
@@ -62,14 +63,25 @@ export default function UsersTable({ users, isLoading, error, onEdit }: Props) {
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label={`Edit ${user.name}`}
-                      onClick={() => onEdit(user)}
-                    >
-                      <Pencil className="size-4" />
-                    </Button>
+                    <div className="flex justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Edit ${user.name}`}
+                        onClick={() => onEdit(user)}
+                      >
+                        <Pencil className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Delete ${user.name}`}
+                        disabled={user.role === "admin"}
+                        onClick={() => onDelete(user)}
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}

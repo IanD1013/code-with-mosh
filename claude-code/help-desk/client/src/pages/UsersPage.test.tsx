@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
-import { screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { renderWithProviders } from '../test/render';
@@ -77,5 +78,31 @@ describe('UsersPage', () => {
     renderWithProviders(<UsersPage />);
     await waitForElementToBeRemoved(() => document.querySelector('.animate-pulse'));
     expect(screen.getByText(/403|forbidden|request failed/i)).toBeInTheDocument();
+  });
+
+  it('shows the dialog when the New User button is clicked', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<UsersPage />);
+    await user.click(screen.getByRole('button', { name: /new user/i }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('hides the dialog when Escape is pressed', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<UsersPage />);
+    await user.click(screen.getByRole('button', { name: /new user/i }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    await user.keyboard('{Escape}');
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  });
+
+  it('hides the dialog when clicking outside', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<UsersPage />);
+    await user.click(screen.getByRole('button', { name: /new user/i }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    const overlay = document.querySelector('[data-slot="dialog-overlay"]') as HTMLElement;
+    await user.click(overlay);
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   });
 });
